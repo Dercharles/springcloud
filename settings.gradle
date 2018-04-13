@@ -1,0 +1,26 @@
+rootProject.name = 'uam-security'
+include ':uam-admin'
+include ':uam-center'
+include ':uam-admin-interface'
+include ':uam-gate:uam-gate-ratelimit'
+include ':uam-gate:uam-gate-server'
+include ':uam-gate'
+include ':uam-common'
+include ':uam-config'
+include ':uam-auth:uam-auth-client'
+include ':uam-auth:uam-auth-server'
+include ':uam-auth:uam-auth-common'
+include ':uam-auth'
+
+project(':uam-admin').projectDir = "$rootDir/uam-admin" as File
+project(':uam-center').projectDir = "$rootDir/uam-center" as File
+project(':uam-admin-interface').projectDir = "$rootDir/uam-admin-interface" as File
+project(':uam-gate:uam-gate-ratelimit').projectDir = "$rootDir/uam-gate/uam-gate-ratelimit" as File
+project(':uam-gate:uam-gate-server').projectDir = "$rootDir/uam-gate/uam-gate-server" as File
+project(':uam-gate').projectDir = "$rootDir/uam-gate" as File
+project(':uam-common').projectDir = "$rootDir/uam-common" as File
+project(':uam-config').projectDir = "$rootDir/uam-config" as File
+project(':uam-auth:uam-auth-client').projectDir = "$rootDir/uam-auth/uam-auth-client" as File
+project(':uam-auth:uam-auth-server').projectDir = "$rootDir/uam-auth/uam-auth-server" as File
+project(':uam-auth:uam-auth-common').projectDir = "$rootDir/uam-auth/uam-auth-common" as File
+project(':uam-auth').projectDir = "$rootDir/uam-auth" as File

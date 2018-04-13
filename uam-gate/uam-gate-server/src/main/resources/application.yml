@@ -1,0 +1,241 @@
+spring:
+  profiles:
+    active: local
+
+---
+#For local environment
+spring:
+    profiles: local
+    application:
+        name: uam-gate
+    thymeleaf:
+        mode: LEGACYHTML5
+        cache: false
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        time-zone: GMT+8
+        default-property-inclusion: non_null
+    redis:
+        database: 1
+        host: 139.198.190.164
+        port: 42193
+        password: dzjt
+#        host: ${REDIS_HOST:localhost}
+#        port:  ${REDIS_PORT:6379}
+        pool:
+            max-active: 20
+    rabbitmq:
+        host: 139.198.190.164
+        port: 25672
+        username: guest
+        password: guest
+    zipkin:
+      enabled: true
+    sleuth:
+      sampler:
+        percentage: 1
+server:
+    port: 7165 #启动端口
+    ssl:
+      enabled: false
+      client-auth: want
+      key-store: classpath:keystore.p12
+      key-store-type: PKCS12
+      key-password: aw3hzFtAfQUdvt8Z
+      key-store-password: aw3hzFtAfQUdvt8Z
+      key-alias: ump
+#
+zuul:
+  ignored-services: "*"
+  sensitive-headers:
+  prefix: /api #为zuul设置一个公共的前缀
+  ratelimit: # 网关限流
+    key-prefix: gate_rate
+    enabled: false
+    repository: REDIS #REDIS, JPA, IN_MEMORY
+    behind-proxy: true
+    default-policy: #optional - will apply unless specific policy exists
+      limit: 200
+      refresh-interval: 60 #default value (in seconds)
+      type: #optional
+        - user
+        - origin
+        - url
+  routes:
+    back:
+      path: /admin/**
+      serviceId: uam-admin
+
+    auth:
+      path: /auth/**
+      serviceId: uam-auth
+
+    bos:
+      path: /bos/**
+      serviceId: bos
+
+ribbon:
+  eureka:
+    enabled: true
+  ReadTimeout: 120000
+  ConnectTimeout: 120000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+  OkToRetryOnAllOperations: false
+
+
+hystrix:
+  threadpool:
+    default:
+      coreSize: 1000 ##并发执行的最大线程数，默认10
+      maxQueueSize: 1000 ##BlockingQueue的最大队列数
+      queueSizeRejectionThreshold: 500 ##即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 50000
+          strategy: SEMAPHORE
+
+auth:
+  serviceId: uam-auth
+  user:
+    token-header: Authorization
+  client:
+    token-header: client-token
+    id: uam-gate  #不填则默认读取spring.application.name
+    secret: 123456
+
+gate:
+  ignore:
+    startWith: /static,/auth/jwt
+
+logging:
+    file: logs/application-uam-gate.log
+    pattern:
+      console: "%d %-5level %logger : %msg%n"
+      file: "%d %-5level [%thread] %logger : %msg%n"
+    level:
+        com.dzjt.cbs.uam.security.gate: DEBUG
+
+---
+
+#For dev environment
+spring:
+    profiles: dev
+    application:
+        name: uam-gate
+    thymeleaf:
+        mode: LEGACYHTML5
+        cache: false
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        time-zone: GMT+8
+        default-property-inclusion: non_null
+    redis:
+        database: 1
+        host: 139.198.190.164
+        port: 42193
+        password: dzjt
+        pool:
+            max-active: 20
+    rabbitmq:
+        host: 192.168.10.2
+        port: 5672
+        username: guest
+        password: guest
+    zipkin:
+      enabled: true
+    sleuth:
+      sampler:
+        percentage: 1
+server:
+    port: 7165 #启动端口
+    ssl:
+      enabled: true
+      client-auth: want
+      key-store: classpath:keystore.p12
+      key-store-type: PKCS12
+      key-password: aw3hzFtAfQUdvt8Z
+      key-store-password: aw3hzFtAfQUdvt8Z
+      key-alias: ump
+#
+zuul:
+  ignored-services: "*"
+  sensitive-headers:
+  prefix: /api #为zuul设置一个公共的前缀
+  ratelimit: # 网关限流
+    key-prefix: gate_rate
+    enabled: false
+    repository: REDIS #REDIS, JPA, IN_MEMORY
+    behind-proxy: true
+    default-policy: #optional - will apply unless specific policy exists
+      limit: 200
+      refresh-interval: 60 #default value (in seconds)
+      type: #optional
+        - user
+        - origin
+        - url
+  routes:
+    back:
+      path: /admin/**
+      serviceId: uam-admin
+
+    auth:
+      path: /auth/**
+      serviceId: uam-auth
+
+    bos:
+      path: /bos/**
+      serviceId: bos
+
+    crm:
+      path: /crm/**
+      serviceId: crm
+
+ribbon:
+  eureka:
+    enabled: true
+  ReadTimeout: 120000
+  ConnectTimeout: 120000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+  OkToRetryOnAllOperations: false
+
+
+hystrix:
+  threadpool:
+    default:
+      coreSize: 1000 ##并发执行的最大线程数，默认10
+      maxQueueSize: 1000 ##BlockingQueue的最大队列数
+      queueSizeRejectionThreshold: 500 ##即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 50000
+          strategy: SEMAPHORE
+
+auth:
+  serviceId: uam-auth
+  user:
+    token-header: Authorization
+  client:
+    token-header: client-token
+    id: uam-gate  #不填则默认读取spring.application.name
+    secret: 123456
+
+gate:
+  ignore:
+    startWith: /static,/auth/jwt
+
+logging:
+    file: logs/application-uam-gate.log
+    pattern:
+      console: "%d %-5level %logger : %msg%n"
+      file: "%d %-5level [%thread] %logger : %msg%n"
+    level:
+        com.dzjt.cbs.uam.security.gate: ERROR
+
